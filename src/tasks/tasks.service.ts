@@ -45,6 +45,27 @@ export class TasksService {
   }
 
   /**
+   * Update task by id
+   * @param id - The task id
+   * @returns {Object[]} - The tasks object array
+   */
+  updateTaskById(id: string, status: TaskStatus): Task[] {
+    const updatedTask: Task[] = this.tasks.map((task) => {
+      if (task.id === id) {
+        return {
+          id: task?.id,
+          title: task?.title,
+          description: task?.description,
+          status: status,
+        };
+      } else {
+        return task;
+      }
+    });
+    this.tasks = updatedTask;
+    return this.tasks;
+  }
+  /**
    * Delete task by id
    * @param id - The task id
    * @returns {Object[]} - The tasks object array

@@ -7,10 +7,11 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task } from './task.model';
+import { Task, TaskStatus } from './task.model';
 import { CreateTaskDto } from './DTO/create-task.dto';
 
 @Controller('tasks')
@@ -37,6 +38,17 @@ export class TasksController {
   @HttpCode(201)
   createTask(@Body() createTaskDto: CreateTaskDto): Task {
     return this.tasksService.createTask(createTaskDto);
+  }
+
+  /**
+   * Route: PATCH /tasks/:id/status
+   * Description: Update a exiting task.
+   * Request Body: { status: string }
+   */
+  @Patch(':id/status')
+  @HttpCode(200)
+  updateTaskById(@Param('id') id: string, @Body('status') status: TaskStatus) {
+    return this.tasksService.updateTaskById(id, status);
   }
 
   /**
