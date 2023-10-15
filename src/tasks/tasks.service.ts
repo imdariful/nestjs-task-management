@@ -3,6 +3,7 @@
 import { Injectable } from '@nestjs/common';
 import { Task, TaskStatus } from './task.model';
 import { v4 as uuid } from 'uuid';
+import { CreateTaskDto } from './DTO/create-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -14,7 +15,8 @@ export class TasksService {
   }
 
   // create task and push it to database
-  createTask(title: string, description: string): Task {
+  createTask(createTaskDto: CreateTaskDto): Task {
+    const { title, description } = createTaskDto;
     const task: Task = {
       id: uuid(), // this to generate a unique id
       title,
