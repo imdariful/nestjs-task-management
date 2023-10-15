@@ -19,23 +19,24 @@ export class TasksService {
   }
 
   /**
-   * Get all tasks
+   * Get all filtered tasks
    * @returns {Object[]} - The tasks object array.
    */
   filterTasks(filterTaskDto: CreateFilterTaskDto): Task[] {
-    const { search, status } = filterTaskDto;
+    const { status, search } = filterTaskDto;
 
     let tasks = this.getAllTasks();
 
-    if (search) {
+    if (status) {
       tasks = tasks.filter((task) => task.status === status);
     }
 
-    if (status) {
+    if (search) {
       tasks = tasks.filter((task) => {
-        if (task.title.includes(status) || task.description.includes(search)) {
+        if (task.title.includes(search) || task.description.includes(search)) {
           return true;
         }
+
         return false;
       });
     }
