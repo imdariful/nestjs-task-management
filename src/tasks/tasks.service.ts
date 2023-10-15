@@ -9,17 +9,27 @@ import { CreateTaskDto } from './DTO/create-task.dto';
 export class TasksService {
   private tasks: Task[] = []; // defined an empty array for saving tasks.
 
-  // get all the tasks from the database
+  /**
+   * Get all tasks
+   * @returns {Object[]} - The tasks object array.
+   */
   getAllTasks(): Task[] {
     return this.tasks;
   }
 
-  // get task by id
+  /**
+   * Get task by id
+   * @param id - The task id
+   * @returns {Object} - The tasks object
+   */
   getTaskById(id: string): Task {
     return this.tasks.find((task) => task.id === id);
   }
 
-  // create task and push it to database
+  /**
+   * Create task
+   * @returns  {Object} - The task object.
+   */
   createTask(createTaskDto: CreateTaskDto): Task {
     const { title, description } = createTaskDto;
     const task: Task = {
@@ -32,5 +42,16 @@ export class TasksService {
     this.tasks.push(task); // push it to db here tasks array.
 
     return task; // return task to client
+  }
+
+  /**
+   * Delete task by id
+   * @param id - The task id
+   * @returns {Object[]} - The tasks object array
+   */
+  deleteTaskById(id: string): Task[] {
+    const updatedTask = this.tasks.filter((task) => task.id !== id);
+    this.tasks = updatedTask;
+    return this.tasks;
   }
 }

@@ -1,6 +1,14 @@
 /* Task - Controller */
 
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task } from './task.model';
 import { CreateTaskDto } from './DTO/create-task.dto';
@@ -9,27 +17,47 @@ import { CreateTaskDto } from './DTO/create-task.dto';
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
-  // how get tasks req will be handled
-  // example url: http://localhost:3000/tasks/
+  /**
+   * Route: GET /tasks
+   * Description: Retrieve a list of all tasks.
+   * Request Body: { title: string, description: string }
+   */
   @Get()
   @HttpCode(200)
   getAllTasks(): Task[] {
     return this.tasksService.getAllTasks();
   }
 
-  // get task by id
-  // example url: http://localhost:3000/tasks/:id
+  /**
+   * Route: POST /tasks
+   * Description: Create a new task.
+   * Request Body: { title: string, description: string }
+   */
+  @Post()
+  @HttpCode(201)
+  createTask(@Body() createTaskDto: CreateTaskDto): Task {
+    return this.tasksService.createTask(createTaskDto);
+  }
+
+  /**
+   * Route: GET /tasks/:id
+   * Description: Retrieve a single task by id.
+   * @param {string} id - The unique identifier of the task.
+   */
   @Get(':id')
   @HttpCode(200)
   getTaskById(@Param('id') id: string): Task {
     return this.tasksService.getTaskById(id);
   }
 
-  // how create task post req will be handled
-  // example url: http://localhost:3000/tasks/
-  @Post()
-  @HttpCode(201)
-  createTask(@Body() createTaskDto: CreateTaskDto): Task {
-    return this.tasksService.createTask(createTaskDto);
+  /**
+   * Route: DELETE /tasks/:id
+   * Description: Delete a task by id.
+   * @param {string} id - The unique identifier of the task.
+   */
+  @Delete(':id')
+  @HttpCode(200)
+  deleteTaskById(@Param('id') id: string): Task[] {
+    return this.tasksService.deleteTaskById(id);
   }
 }
