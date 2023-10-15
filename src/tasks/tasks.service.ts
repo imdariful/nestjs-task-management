@@ -103,8 +103,10 @@ export class TasksService {
    * @returns {Object[]} - The tasks object array
    */
   deleteTaskById(id: string): Task[] {
-    const updatedTask = this.tasks.filter((task) => task.id !== id);
+    /*     const updatedTask = this.tasks.filter((task) => task.id !== id);
     this.tasks = updatedTask;
-    return this.tasks;
+    return this.tasks; */
+    const found = this.getTaskById(id);
+    return (this.tasks = this.tasks.filter((task) => task.id !== found.id));
   }
 }
