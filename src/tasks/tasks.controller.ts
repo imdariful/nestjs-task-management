@@ -9,10 +9,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task, TaskStatus } from './task.model';
 import { CreateTaskDto } from './DTO/create-task.dto';
+import { CreateFilterTaskDto } from './DTO/create-filter-task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -25,8 +27,12 @@ export class TasksController {
    */
   @Get()
   @HttpCode(200)
-  getAllTasks(): Task[] {
-    return this.tasksService.getAllTasks();
+  getAllTasks(@Query() filterTaskDto: CreateFilterTaskDto): Task[] {
+    if (Object.keys(filterTaskDto).length) {
+      return this.tasksService.filterTasks(filterTaskDto);
+    } else {
+      return this.tasksService.getAllTasks();
+    }
   }
 
   /**
