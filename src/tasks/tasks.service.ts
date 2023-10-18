@@ -1,28 +1,35 @@
 /* Task - Service */
 
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Task, TaskStatus } from './task.model';
-import { v4 as uuid } from 'uuid';
+import { TaskStatus } from './task-status';
 import { CreateTaskDto } from './DTO/create-task.dto';
 import { CreateFilterTaskDto } from './DTO/create-filter-task.dto';
+import { TaskRepository } from './task.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from './task.entity';
 
 @Injectable()
 export class TasksService {
-  private tasks: Task[] = []; // defined an empty array for saving tasks.
+  constructor(
+    @InjectRepository(TaskRepository)
+    private tasksRepository: TaskRepository,
+  ) {}
+
+  // private tasks: Task[] = []; // defined an empty array for saving tasks.
 
   /**
    * Get all tasks
    * @returns {Object[]} - The tasks object array.
    */
-  getAllTasks(): Task[] {
+  /*   getAllTasks(): Task[] {
     return this.tasks;
   }
-
+ */
   /**
    * Get all filtered tasks
    * @returns {Object[]} - The tasks object array.
    */
-  filterTasks(filterTaskDto: CreateFilterTaskDto): Task[] {
+  /*  filterTasks(filterTaskDto: CreateFilterTaskDto): Task[] {
     const { status, search } = filterTaskDto;
 
     let tasks = this.getAllTasks();
@@ -42,27 +49,36 @@ export class TasksService {
     }
 
     return tasks;
-  }
+  } */
 
   /**
    * Get task by id
    * @param id - The task id
    * @returns {Object} - The tasks object
    */
-  getTaskById(id: string): Task {
+  async getTaskById(id: string): Promise<Task> {
+    const found = await this.tasksRepository.findOne(id);
+
+    if (!found) {
+      throw new NotFoundException(`Task with id: ${id} not found.`);
+    }
+
+    return found;
+  }
+  /* getTaskById(id: string): Task {
     const found = this.tasks.find((task) => task.id === id);
     if (!found) {
       // throw new NotFoundException(); or,
       throw new NotFoundException(`Task with id: ${id} not found.`);
     }
     return found;
-  }
+  } */
 
   /**
    * Create task
    * @returns  {Object} - The task object.
    */
-  createTask(createTaskDto: CreateTaskDto): Task {
+  /* createTask(createTaskDto: CreateTaskDto): Task {
     const { title, description } = createTaskDto;
     const task: Task = {
       id: uuid(), // this to generate a unique id
@@ -74,14 +90,14 @@ export class TasksService {
     this.tasks.push(task); // push it to db here tasks array.
 
     return task; // return task to client
-  }
+  } */
 
   /**
    * Update task by id
    * @param id - The task id
    * @returns {Object[]} - The tasks object array
    */
-  updateTaskById(id: string, status: TaskStatus): Task[] {
+  /*  updateTaskById(id: string, status: TaskStatus): Task[] {
     const updatedTask: Task[] = this.tasks.map((task) => {
       if (task.id === id) {
         return {
@@ -96,17 +112,18 @@ export class TasksService {
     });
     this.tasks = updatedTask;
     return this.tasks;
-  }
+  } */
   /**
    * Delete task by id
    * @param id - The task id
    * @returns {Object[]} - The tasks object array
    */
-  deleteTaskById(id: string): Task[] {
-    /*     const updatedTask = this.tasks.filter((task) => task.id !== id);
-    this.tasks = updatedTask;
-    return this.tasks; */
-    const found = this.getTaskById(id);
-    return (this.tasks = this.tasks.filter((task) => task.id !== found.id));
-  }
+
+  // deleteTaskById(id: string): Task[] {
+  //   /*     const updatedTask = this.tasks.filter((task) => task.id !== id);
+  //   this.tasks = updatedTask;
+  //   return this.tasks; */
+  //   const found = this.getTaskById(id);
+  //   return (this.tasks = this.tasks.filter((task) => task.id !== found.id));
+  // }
 }
